@@ -42,14 +42,14 @@ class GeoPhotos:
                 if os.path.isfile(item):
                     self._images.add(item)
 
-    def find(self, pathname, recursive=None, internal=False):
+    def find(self, pathname, recursive=None, feed=False):
         if recursive is None:
             if '**' in pathname:
                 recursive = True
             else:
                 recursive = False
         filepaths = glob.glob(f'{pathname}', recursive=recursive)
-        if internal:
+        if feed:
             self.feed(filepaths)
         else:
             return filepaths
@@ -133,8 +133,13 @@ class GeoPhotos:
                 if info['Longitude Reference'] != 'E':
                     longitude *= -1
 
-
         return [latitude, longitude] if as_list else (latitude, longitude)
+
+    def get_latitudes(self, exif_data):
+        return [latitude for _, latitude, _ in self.pull_coordinates()]
+
+    def get_longitudes(self, exif_data):
+        return [longitude for _, _, longitude in self.pull_coordinates()]
 
     def write_csv(self, filepath, data, labels=None, filter_none=True):
 
@@ -185,17 +190,169 @@ class GeoPhotos:
         return '\n'.join(sorted(self._images))
 
 
+
+
+
+
+
+
+
+
+
+
+class Heatmap(folium.Map):
+
+    def __init__(self, *args, **kwargs):
+
+        folium.Map.__init__(self, *args, **kwargs)
+
+        self._coordinates = None
+        self._latitudes = None
+        self._longitudes = None
+
+    def _combine(self):
+        self._coordinates = list(zip(self._latitudes, self._longitudes))
+
+    @property
+    def coordinates(self):
+        return self._coordinates
+
+    @coordinates.setter
+    def coordinates(self, data):
+        self._coordinates = data
+
+    @property
+    def latitudes(self):
+        return self._latitudes
+
+    @latitudes.setter
+    def latitudes(self, data):
+        self._latitudes = data
+        if self._latitudes and self._longitudes:
+            self._combine()
+
+    @property
+    def longitudes(self):
+        return self._longitudes
+
+    @longitudes.setter
+    def longitudes(self, data):
+        self._longitudes = data
+        if self._latitudes and self._longitudes:
+            self._combine()
+
+    def feed(self, latitudes, longitudes):
+        self._latitudes = latitudes
+        self._longitudes = longitudes
+        self._combine()
+
+    def create(self, **kwargs):
+
+        valid = ['name', 'min_opacity', 'max_zoom', 'max_val', 'radius',
+                 'blur', 'gradient', 'overlay', 'control', 'show']
+        for kwarg in kwargs:
+            if kwarg not in valid:
+                raise ValueError('Invalid keyword argument.')
+
+        heatmap = HeatMap(self._coordinates, **kwargs)
+
+        heatmap.add_to(self)
+
+    def add_marker(self, location, popup=None, tooltip=None):
+
+        if isinstance(popup, dict):
+            valid = ['html', 'parse_html', 'max_width', 'show', 'sticky']
+            for kwarg in popup:
+                if kwarg not in valid:
+                    raise ValueError('Invalid keyword argument.')
+            popup = folium.Popup(**popup)
+
+        marker = folium.Marker(location=location, popup=popup, tooltip=tooltip)
+        marker.add_to(self)
+
+    def save_html(self, filepath, open_html=False):
+        self.save(filepath)
+        if open_html:
+            self.open_html(filepath)
+
+    def open_html(self, filepath):
+        path = os.path.dirname(os.path.abspath(__file__))
+        webbrowser.open(f'file://{path}/{filepath}')
+
+
+
+
+
+
+def coordinates_from_csv(filepath, latitude_column, longitude_column,
+                         delimiter=','):
+
+    data = pd.read_csv(filepath, delimiter=delimiter)
+
+    latitudes = data.iloc[:, latitude_column-1]
+    longitudes = data.iloc[:, longitude_column-1]
+
+    return list(zip(latitudes, longitudes))
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
-    path = r"C:\Users\jakem\OneDrive\Python\Leisure Projects\Geolocation Map"
-    app = GeoPhotos()
-    # app.find(f'{path}\\**\\*.jpg', internal=True)
-    photos = glob.glob(f'{path}\\**\\*.jpg', recursive=True)
-    app.images = photos
-    # for item in app.images: print(item)
-    # print(app)
-    # app.generate_heatmap()
-    # app.generate_heatmap(source='csv', coordinate_data='coordinates.csv',
-    #                      latitude_column=2, longitude_column=3, open_html=True)
-    data = [datum for datum in app.pull_coordinates() if None not in datum]
-    app.generate_heatmap(source='data', coordinate_data=data,
-                         latitude_column=2, longitude_column=3, open_html=True)
+    # # Directory where images are stored
+    # path = r"C:\Users\jakem\OneDrive\Python\Leisure Projects\Geolocation Map"
+
+    # # Initialize GeoPhotos object
+    # app = GeoPhotos()
+    # # Get the filepaths of all jpg files and feed it to the GeoPhotos object
+    # app.find(f'{path}\\**\\*.jpg', feed=True)
+    # # Pull the coordinates and filter out None values
+    # data = [datum for datum in app.pull_coordinates(include_timestamp=False)
+    #         if None not in datum]
+
+    # # Read coordinate data from csv
+    # data = coordinates_from_csv('coordinates.csv', 2, 3)
+    # # Initialize the Heatmap object
+    # heatmap = Heatmap(location=data[1], zoom_start=14)
+    # # Feed the Heatmap object the coordinates
+    # heatmap.coordinates = data
+    # # Create the heatmap
+    # heatmap.create(max_zoom=14, min_opacity=0.05, radius=13, blur=25)
+    # # Save the heatmap and open it in a browser
+    # heatmap.save_html('test.html', open_html=True)
+
+
+
+
+    # Read coordinate data from csv
+    data = coordinates_from_csv('coordinates.csv', 2, 3)
+    # Initialize the Heatmap object
+    ny_center = [42.965000, -76.016667]
+    # heatmap = Heatmap(location=ny_center, zoom_start=5, tiles='Mapbox Bright')
+    heatmap = Heatmap(location=ny_center, zoom_start=7)
+    # Feed the Heatmap object the coordinates
+    heatmap.coordinates = data
+    # Create the heatmap
+    heatmap.create(max_zoom=10, min_opacity=0.05, radius=13, blur=25)
+    # Add a marker to the heatmap
+    # hamburg = [42.74444, -78.85833]
+    hamburg = [42.715746, -78.829416]
+    # popup = folium.Popup(html='<strong>Hamburg, NY</strong><br>My hometown!',
+    #                      parse_html=False,
+    #                      max_width=14000,
+    #                      show=False,
+    #                      sticky=False)
+    popup = dict(html='<strong>Hamburg, NY</strong><br>My hometown!',
+                 parse_html=False,
+                 max_width=14000,
+                 show=False,
+                 sticky=False)
+    heatmap.add_marker(location=hamburg,
+                    #    popup=popup,
+                    #    tooltip='Hometown')
+                       tooltip='<strong>Hamburg, NY</strong><br>Hometown')
+    # Save the heatmap and open it in a browser
+    heatmap.save_html('test.html', open_html=True)
