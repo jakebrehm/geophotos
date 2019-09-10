@@ -1,0 +1,4 @@
+include geophotos/data/*.shp
+include geophotos/data/*.shx
+include geophotos/data/*.dbf
+include geophotos/data/*.prj

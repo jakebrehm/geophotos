@@ -1,4 +1,8 @@
-images/
+__pycache__/
+dist/
+*.egg-info/
+geophotos/data/testing/
+tests/
 create_csv.py
 *.csv
 *.html
