@@ -1,4 +1,4 @@
-**GeoPhotos** is a package to pull, plot, and analyze coordinates from photos.
+**GeoPhotos** is a package to pull, analyze, and plot coordinates from photos.
 
 ---
 # What is **GeoPhotos**?
