@@ -11,7 +11,7 @@ setup(
      author="Jake Brehm",
      author_email="code@jakebrehm.com",
      license='MIT',
-     description="A package to pull, plot, and analyze coordinates from phots.",
+     description="A package to pull, plot, and analyze coordinates from photos.",
      long_description=README,
      long_description_content_type="text/markdown",
      url="https://github.com/jakebrehm/geophotos",

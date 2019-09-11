@@ -315,7 +315,6 @@ if __name__ == '__main__':
     data = coordinates_from_csv(r'data\testing\coordinates.csv', 2, 3)
     # Initialize the Map object
     nys_center = [42.965000, -76.016667]
-    # heatmap = Heatmap(location=ny_center, zoom_start=5, tiles='Mapbox Bright')
     heatmap = Map(location=nys_center, zoom_start=7)
     # Feed the Heatmap object the coordinates
     heatmap.coordinates = data
@@ -324,19 +323,7 @@ if __name__ == '__main__':
                            name='Photo Heatmap')
     # Add a marker to the heatmap
     hamburg_ny = [42.715746, -78.829416]
-    # popup = folium.Popup(html='<strong>Hamburg, NY</strong><br>My hometown!',
-    #                      parse_html=False,
-    #                      max_width=14000,
-    #                      show=False,
-    #                      sticky=False)
-    popup = dict(html='<strong>Hamburg, NY</strong><br>My hometown!',
-                 parse_html=False,
-                 max_width=14000,
-                 show=False,
-                 sticky=False)
     heatmap.add_marker(location=hamburg_ny,
-                    #    popup=popup,
-                    #    tooltip='Hometown')
                        tooltip='<strong>Hamburg, NY</strong><br>Hometown')
     # Analyze the data
     with open(r'data\testing\coordinates.pickle', 'rb') as pickle_file:
