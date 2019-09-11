@@ -24,7 +24,6 @@ setup(
         'folium',
         'webbrowser',
         'osgeo',
-        'fiona',
         'geopandas',
      ],
      include_package_data=True,
