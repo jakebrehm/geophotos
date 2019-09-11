@@ -17,7 +17,7 @@ setup(
      url="https://github.com/jakebrehm/geophotos",
      packages=find_packages(),
      package_data={
-        '': ['*.shp', '*.shx', '*.dbf', '*.prj']
+        '': ['*.zip', '*.shp', '*.shx', '*.dbf', '*.prj']
      },
      install_requires=[
         'pillow',

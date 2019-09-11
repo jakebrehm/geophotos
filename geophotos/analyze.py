@@ -39,12 +39,29 @@ class Analyzer:
         locator = ReverseGeolocator(r'data\world_borders.shp')
         return [locator.get_country(datum) for datum in self.data]
 
-    def unique_countries(self):
-        return set(self.countries)
+    def unique_countries(self, include_none=False):
+        if include_none:
+            return set(self.countries)
+        else:
+            return set(country for country in self.countries if country)
+        # return set(self.countries)
 
-    def count_countries(self):
-        counter = Counter(self.countries)
-        return dict(counter)
+    def count_countries(self, include_none=False):
+        if include_none:
+            return len(set(self.countries))
+        else:
+            return len([country for country in set(self.countries) if country])
+
+    def country_frequency(self, include_none=False, sort=True):
+        if include_none:
+            counter = Counter(self.countries)
+        else:
+            counter = Counter(country for country in self.countries if country)
+        
+        if sort:
+            return sorted(dict(counter).items(), key=lambda kv: kv[1], reverse=True)
+        else:
+            return dict(counter)
 
     def most_common(self, n, include_none=False):
         if include_none:

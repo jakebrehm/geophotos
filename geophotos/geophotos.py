@@ -12,6 +12,8 @@ import folium
 from folium.plugins import HeatMap
 import webbrowser
 
+import geopandas as gpd
+
 try:
     import analyze
 except:
@@ -177,6 +179,7 @@ class GeoPhotos:
             longitudes = data.iloc[:, longitude_column-1]
 
         # Need to find a better way to make the heatmap more customizable
+        # when being generated through the GeoPhotos class
 
         heatmap = folium.Map(location=[43.1065, -76.2177], zoom_start=14)
 
@@ -271,17 +274,26 @@ class Map(folium.Map):
             self.open_html(filepath)
 
     def open_html(self, filepath):
-        path = os.path.dirname(os.path.abspath(__file__))
-        webbrowser.open(f'file://{path}/{filepath}')
+        webbrowser.open(f'file://{filepath}')
 
-    # @property
-    # def countries(self):
-    #     locator = analyze.ReverseGeolocator(r'data\world_borders.shp')
+    def add_layer_control(self):
+        folium.LayerControl().add_to(self)
 
-    #     countries = [locator.get_country(coordinate) for coordinate in self.coordinates]
 
-    #     print(set(countries))
+class BorderLayer(folium.GeoJson):
 
+    def __init__(self, countries='all', name=None):
+
+        self.borders = gpd.read_file('zip://data/world_borders.zip')
+
+        if isinstance(countries, str) and countries == 'all':
+            self.countries = self.borders
+        elif isinstance(countries, str):
+            self.countries = self.borders[self.borders['NAME'] == countries]
+        else:
+            self.countries = self.borders[self.borders['NAME'].isin(countries)]
+
+        folium.GeoJson.__init__(self, self.countries, name=name)
 
 
 def coordinates_from_csv(filepath, latitude_column, longitude_column,
@@ -296,127 +308,50 @@ def coordinates_from_csv(filepath, latitude_column, longitude_column,
 
 
 if __name__ == '__main__':
-    # # Directory where images are stored
-    # path = r"C:\Users\jakem\OneDrive\Python\Leisure Projects\Geolocation Map"
-
-    # # Initialize GeoPhotos object
-    # app = GeoPhotos()
-    # # Get the filepaths of all jpg files and feed it to the GeoPhotos object
-    # app.find(f'{path}\\**\\*.jpg', feed=True)
-    # # Pull the coordinates and filter out None values
-    # data = [datum for datum in app.pull_coordinates(include_timestamp=False)
-    #         if None not in datum]
-
-    # # Read coordinate data from csv
-    # data = coordinates_from_csv('coordinates.csv', 2, 3)
-    # # Initialize the Map object
-    # heatmap = Map(location=data[1], zoom_start=14)
-    # # Feed the Heatmap object the coordinates
-    # heatmap.coordinates = data
-    # # Create the heatmap
-    # heatmap.create_heatmap(max_zoom=14, min_opacity=0.05, radius=13, blur=25)
-    # # Save the heatmap and open it in a browser
-    # heatmap.save_html('test.html', open_html=True)
-
-
-
-
-    # # Read coordinate data from csv
-    # data = coordinates_from_csv('coordinates.csv', 2, 3)
-    # # Initialize the Map object
-    # ny_center = [42.965000, -76.016667]
-    # # heatmap = Heatmap(location=ny_center, zoom_start=5, tiles='Mapbox Bright')
-    # heatmap = Map(location=ny_center, zoom_start=7)
-    # # Feed the Heatmap object the coordinates
-    # heatmap.coordinates = data
-    # # Create the heatmap
-    # heatmap.create_heatmap(max_zoom=10, min_opacity=0.05, radius=13, blur=25)
-    # # Add a marker to the heatmap
-    # # hamburg = [42.74444, -78.85833]
-    # hamburg = [42.715746, -78.829416]
-    # # popup = folium.Popup(html='<strong>Hamburg, NY</strong><br>My hometown!',
-    # #                      parse_html=False,
-    # #                      max_width=14000,
-    # #                      show=False,
-    # #                      sticky=False)
-    # popup = dict(html='<strong>Hamburg, NY</strong><br>My hometown!',
-    #              parse_html=False,
-    #              max_width=14000,
-    #              show=False,
-    #              sticky=False)
-    # heatmap.add_marker(location=hamburg,
-    #                 #    popup=popup,
-    #                 #    tooltip='Hometown')
-    #                    tooltip='<strong>Hamburg, NY</strong><br>Hometown')
-    # # Save the heatmap and open it in a browser
-    # heatmap.save_html('test.html', open_html=True)
-
-    
-
-
-    
-    # # Read coordinate data from csv
-    # data = coordinates_from_csv(r'data\testing\coordinates.csv', 2, 3)
-    # data = data[0:10000]
-    # analyzer = analyze.Analyzer(data)
-    # print(analyzer.unique_countries())
-    # print(analyzer.count_countries())
-    # print(analyzer.most_common(5))
-
 
     import pickle
 
+    # Read coordinate data from csv
+    data = coordinates_from_csv(r'data\testing\coordinates.csv', 2, 3)
+    # Initialize the Map object
+    nys_center = [42.965000, -76.016667]
+    # heatmap = Heatmap(location=ny_center, zoom_start=5, tiles='Mapbox Bright')
+    heatmap = Map(location=nys_center, zoom_start=7)
+    # Feed the Heatmap object the coordinates
+    heatmap.coordinates = data
+    # Create the heatmap
+    heatmap.create_heatmap(max_zoom=10, min_opacity=0.05, radius=13, blur=25,
+                           name='Photo Heatmap')
+    # Add a marker to the heatmap
+    hamburg_ny = [42.715746, -78.829416]
+    # popup = folium.Popup(html='<strong>Hamburg, NY</strong><br>My hometown!',
+    #                      parse_html=False,
+    #                      max_width=14000,
+    #                      show=False,
+    #                      sticky=False)
+    popup = dict(html='<strong>Hamburg, NY</strong><br>My hometown!',
+                 parse_html=False,
+                 max_width=14000,
+                 show=False,
+                 sticky=False)
+    heatmap.add_marker(location=hamburg_ny,
+                    #    popup=popup,
+                    #    tooltip='Hometown')
+                       tooltip='<strong>Hamburg, NY</strong><br>Hometown')
+    # Analyze the data
     with open(r'data\testing\coordinates.pickle', 'rb') as pickle_file:
         analyzer = pickle.load(pickle_file)
-
-    print(analyzer)
-    print(type(analyzer))
-    print(analyzer.unique_countries())
-    print(analyzer.count_countries())
-    print(analyzer.most_common(5))
-
-    # # Read coordinate data from csv
-    # data = coordinates_from_csv(r'data\testing\coordinates.csv', 2, 3)
-    # analyzer = analyze.Analyzer(data, save_pickle=r'data\testing\coordinates.pickle')
-
-    # pickle_out = open(r'data\testing\coordinates.pickle', 'wb')
-    # pickle.dump(analyzer, pickle_out)
-
-    # with open(r'data\testing\coordinates.pickle', 'wb') as pickle_out:
-    #     pickle.dump(analyzer, pickle_out)
-
-    # print(analyzer.unique_countries())
-    # print(analyzer.count_countries())
-    # print(analyzer.most_common(5))
-
-
-
-
-
-    # # Initialize the Map object
-    # ny_center = [42.965000, -76.016667]
-    # # heatmap = Heatmap(location=ny_center, zoom_start=5, tiles='Mapbox Bright')
-    # heatmap = Map(location=ny_center, zoom_start=7)
-    # # Feed the Heatmap object the coordinates
-    # heatmap.coordinates = data
-    # # Create the heatmap
-    # heatmap.create_heatmap(max_zoom=10, min_opacity=0.05, radius=13, blur=25)
-    # # Add a marker to the heatmap
-    # # hamburg = [42.74444, -78.85833]
-    # hamburg = [42.715746, -78.829416]
-    # # popup = folium.Popup(html='<strong>Hamburg, NY</strong><br>My hometown!',
-    # #                      parse_html=False,
-    # #                      max_width=14000,
-    # #                      show=False,
-    # #                      sticky=False)
-    # popup = dict(html='<strong>Hamburg, NY</strong><br>My hometown!',
-    #              parse_html=False,
-    #              max_width=14000,
-    #              show=False,
-    #              sticky=False)
-    # heatmap.add_marker(location=hamburg,
-    #                 #    popup=popup,
-    #                 #    tooltip='Hometown')
-    #                    tooltip='<strong>Hamburg, NY</strong><br>Hometown')
-    # # Save the heatmap and open it in a browser
-    # heatmap.save_html('test.html', open_html=True)
+    results = {
+        'Unique Countries': analyzer.unique_countries(),
+        'Count': analyzer.count_countries(),
+        'Frequency': analyzer.country_frequency(),
+        'Most Common': analyzer.most_common(5),
+    }
+    # Use the data to determine which countries to highlight
+    border_layer = BorderLayer(results['Unique Countries'], name='Countries Visited')
+    border_layer.add_to(heatmap)
+    # Add layer control functionality to the map
+    heatmap.add_layer_control()
+    # Save the heatmap and open it in a browser
+    path = r'C:\Users\jakem\OneDrive\Python\GeoPhotos\tests\sample_results\visited_countries.html'
+    heatmap.save_html(path, open_html=True)

@@ -1,3 +1,4 @@
+include geophotos/data/*.zip
 include geophotos/data/*.shp
 include geophotos/data/*.shx
 include geophotos/data/*.dbf
