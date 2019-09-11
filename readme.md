@@ -33,5 +33,3 @@ heatmap.add_layer_control()
 # Save the heatmap and open it in a browser
 heatmap.save_html('sample.html', open_html=True)
 ```
-
-<iframe src="https://github.com/jakebrehm/geophotos/blob/readme-update/img/sample.html" style="border: 0; width:100%; height:500px;"></iframe>
