@@ -1,6 +1,6 @@
 **GeoPhotos** is a package to pull, plot, and analyze coordinates from photos.
 
-```
+```python
 import geophotos as gp
 
 # Read coordinate data from csv
@@ -12,11 +12,11 @@ heatmap = gp.Map(location=nys_center, zoom_start=7)
 heatmap.coordinates = data
 # Create the heatmap
 heatmap.create_heatmap(max_zoom=10, min_opacity=0.05, radius=13, blur=25,
-                        name='Photo Heatmap')
+                       name='Photo Heatmap')
 # Add a marker to the heatmap
 hamburg_ny = [42.715746, -78.829416]
 heatmap.add_marker(location=hamburg_ny,
-                    tooltip='<strong>Hamburg, NY</strong><br>Hometown')
+                   tooltip='<strong>Hamburg, NY</strong><br>Hometown')
 # Analyze the data
 analyzer = gp.Analyzer(data)
 results = {

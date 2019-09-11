@@ -7,3 +7,4 @@ tests/
 create_csv.py
 *.csv
 *.html
+*.DS_Store
