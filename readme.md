@@ -35,5 +35,5 @@ heatmap.save_html('sample.html', open_html=True)
 ```
 
 <p align="center">
-  <img src="https://github.com/jakebrehm/geophotos/blob/readme-update/img/sample.jpg" alt="sample map"/>
+  <img src="https://github.com/jakebrehm/geophotos/blob/readme-update/img/sample.JPG" alt="sample map"/>
 </p>
