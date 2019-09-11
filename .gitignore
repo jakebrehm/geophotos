@@ -1,9 +1,10 @@
 __pycache__/
-.ipynb_checkpoints/
 dist/
+.ipynb_checkpoints/
 *.egg-info/
 geophotos/data/testing/
 tests/
 create_csv.py
 *.csv
 *.html
+!img/sample.html
