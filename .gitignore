@@ -7,4 +7,3 @@ tests/
 create_csv.py
 *.csv
 *.html
-!img/sample.html

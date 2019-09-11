@@ -33,3 +33,7 @@ heatmap.add_layer_control()
 # Save the heatmap and open it in a browser
 heatmap.save_html('sample.html', open_html=True)
 ```
+
+<p align="center">
+  <img src="https://github.com/jakebrehm/geophotos/blob/readme-update/img/sample.jpg" alt="sample map"/>
+</p>
