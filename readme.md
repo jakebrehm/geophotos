@@ -48,11 +48,12 @@ pip install geophotos
 
 However, you will most likely run into problems doing it this way.
 Unfortunately, I have tried and failed to overcome these obstacles myself.
-My recommendation is to install geopandas using Anaconda/conda, and then pip
-install it into your current environment:
+My recommendation is to install geopandas using Anaconda/conda (you might have
+to install gdal as well), and then pip install it into your current environment:
 
 ```
 conda install geopandas
+conda install gdal
 pip install geophotos
 ```
 
