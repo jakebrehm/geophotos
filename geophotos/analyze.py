@@ -2,6 +2,8 @@ from osgeo import ogr
 import fiona
 from collections import Counter
 import pickle
+import os
+
 
 class ReverseGeolocator:
 
@@ -36,7 +38,8 @@ class Analyzer:
                 pickle.dump(self, output)
 
     def _get_countries(self):
-        locator = ReverseGeolocator(r'data\world_borders.shp')
+        shapefile_path = os.path.join('data', 'world_borders.shp')
+        locator = ReverseGeolocator(shapefile_path)
         return [locator.get_country(datum) for datum in self.data]
 
     def unique_countries(self, include_none=False):
@@ -44,7 +47,6 @@ class Analyzer:
             return set(self.countries)
         else:
             return set(country for country in self.countries if country)
-        # return set(self.countries)
 
     def count_countries(self, include_none=False):
         if include_none:
@@ -71,39 +73,9 @@ class Analyzer:
         return counter.most_common(n)
 
 
-def count_countries(data):
-    pass
-
-
-def unique_countries(data):
-
-    # locator = ReverseGeolocator(r'data\world_borders.shp')
-    # countries = [locator.get_country(datum) for datum in data]
-    # return set(countries)
-    
-    locator = ReverseGeolocator(r'data\world_borders.shp')
-
-    total = len(data)
-
-    # countries = set()
-    countries = list()
-
-    for d, datum in enumerate(data):
-        # countries.add(locator.get_country(datum))
-        countries.append(locator.get_country(datum))
-
-        percent = (d+1)/total * 100
-        print(f'{percent:.2f}% finished.')
-
-    # from collections import Counter
-    # print(Counter(countries))
-
-    # return set(countries)
-    return set(countries)
-
-
 if __name__ == '__main__':
-    cc = ReverseGeolocator(r'data\world_borders.shp')
+    shapefile_path = os.path.join('data', 'world_borders.shp')
+    cc = ReverseGeolocator(shapefile_path)
     coordinates = [42.715746, -78.829416] # hamburg
     print(cc.get_country(coordinates))
     coordinates = [55.644904, 12.576965] # amager
