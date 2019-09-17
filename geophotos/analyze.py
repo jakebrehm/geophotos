@@ -1,10 +1,14 @@
+# -*- coding: utf-8 -*-
+
 '''
+geophotos.analyze
+~~~~~~~~~~~~~~~~~
+
 Analyzes coordinate data to determine which countries each datum falls
 under. Furthermore, with the list of countries determined, subsequent
 analysis can be performed in order to output characteristics of the
 dataset such as which countries appeared most frequently.
 '''
-
 
 from osgeo import ogr
 import fiona
@@ -39,7 +43,7 @@ class ReverseGeolocator:
         Example usage:
         >>> locator = ReverseGeolocator(r'data/world_borders.zip')
         >>> locator.get_country([55.644904, 12.576965])
-         •  Denmark
+        Denmark
         
         Args:
             coordinates (list/tuple):
@@ -60,10 +64,23 @@ class ReverseGeolocator:
 
 
 class Analyzer:
-    ''''''
+    '''Performs analysis of given coordinate data.'''
 
     def __init__(self, data, save_pickle=None):
-        ''''''
+        '''Initializes the object. Loops through the data that was
+        passed in, which may take a very long time; therefore, an
+        option to pickle the resulting object is included.
+        
+        Args:
+            data (list):
+                A list of lits/tuples containing coordinates.
+                e.g. [(latitude, longitude), ...]
+                
+        Kwargs:
+            save_pickle (str) [None]:
+                Path to save the pickled Analyzer object to.
+                A value of None will not save a pickle.
+        '''
         
         self.data = data
         self.countries = self._get_countries()
@@ -73,14 +90,27 @@ class Analyzer:
                 pickle.dump(self, output)
 
     def _get_countries(self):
-        ''''''
+        '''Gathers an exhaustive list of countries that appear in the
+        data. This may take awhile for large datasets.
+        
+        Returns:
+            A list of countries.
+        '''
         
         shapefile_path = os.path.join('data', 'world_borders.shp')
         locator = ReverseGeolocator(shapefile_path)
         return [locator.get_country(datum) for datum in self.data]
 
     def unique_countries(self, include_none=False):
-        ''''''
+        '''Determines the unique countries that appear in the data.
+        
+        Kwargs:
+            include_none (bool) [False]:
+                False will remove all None values from the result.
+
+        Returns:
+            A set of unique countries (no repeats).
+        '''
         
         if include_none:
             return set(self.countries)
@@ -88,7 +118,16 @@ class Analyzer:
             return set(country for country in self.countries if country)
 
     def count_countries(self, include_none=False):
-        ''''''
+        '''Counts the number of unique countries that appear in the
+        data.
+        
+        Kwargs:
+            include_none (bool) [False]:
+                False will remove all None values from the result.
+
+        Returns:
+            Number of unique countries as an integer.
+        '''
         
         if include_none:
             return len(set(self.countries))
@@ -96,7 +135,19 @@ class Analyzer:
             return len([country for country in set(self.countries) if country])
 
     def country_frequency(self, include_none=False, sort=True):
-        ''''''
+        '''Counts the number of times that each country appeared in the
+        data.
+
+        Kwargs:
+            include_none (bool) [False]:
+                False will remove all None values from the result.
+            sort (bool) [True]:
+                True will sort the result from most to least frequent.
+
+        Returns:
+            A list of tuples, where each tuple contains the name of the
+            country and the number of times it appeared in the data.
+        '''
         
         if include_none:
             counter = Counter(self.countries)
@@ -109,20 +160,22 @@ class Analyzer:
             return dict(counter)
 
     def most_common(self, n, include_none=False):
-        '''Determines the n most common countries that appear in the data.
+        '''Determines the countries that appear most commonly in the
+        data.
         
         Args:
             n (int):
-                test
+                The number of top countries to return.
+                e.g. an n of 5 gives the top 5 most common countries.
         
         Kwargs:
             include_none (bool) [False]:
-                False will remove all instances of None from the result.
-                
+                False will remove all None values from the result.
+
         Returns:
-            A list of tuples ordered from most common to least common, with
-            each tuple containing the name of the country and the number of
-            times it appeared in the data.
+            A list of tuples ordered from most common to least common,
+            with each tuple containing the name of the country and the
+            number of times it appeared in the data.
         '''
         
         if include_none:

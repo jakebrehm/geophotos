@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 import requests
@@ -309,10 +311,11 @@ def coordinates_from_csv(filepath, latitude_column, longitude_column,
 
 if __name__ == '__main__':
 
-    import pickle
+    import pickle    
 
     # Read coordinate data from csv
-    data = coordinates_from_csv(r'data\testing\coordinates.csv', 2, 3)
+    data_path = os.path.join('data', 'testing', 'coordinates.csv')
+    data = coordinates_from_csv(data_path, 2, 3)
     # Initialize the Map object
     nys_center = [42.965000, -76.016667]
     heatmap = Map(location=nys_center, zoom_start=7)
@@ -326,7 +329,8 @@ if __name__ == '__main__':
     heatmap.add_marker(location=hamburg_ny,
                        tooltip='<strong>Hamburg, NY</strong><br>Hometown')
     # Analyze the data
-    with open(r'data\testing\coordinates.pickle', 'rb') as pickle_file:
+    pickle_path = os.path.join('data', 'testing', 'coordinates.pickle')
+    with open(pickle_path, 'rb') as pickle_file:
         analyzer = pickle.load(pickle_file)
     results = {
         'Unique Countries': analyzer.unique_countries(),
@@ -335,10 +339,13 @@ if __name__ == '__main__':
         'Most Common': analyzer.most_common(5),
     }
     # Use the data to determine which countries to highlight
-    border_layer = BorderLayer(results['Unique Countries'], name='Countries Visited')
+    border_layer = BorderLayer(results['Unique Countries'],
+                               name='Countries Visited')
     border_layer.add_to(heatmap)
     # Add layer control functionality to the map
     heatmap.add_layer_control()
     # Save the heatmap and open it in a browser
-    path = r'C:\Users\jakem\OneDrive\Python\GeoPhotos\tests\sample_results\visited_countries.html'
+    main_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    html_name = 'testing.html'
+    path = os.path.join(main_directory, 'tests', 'sample_results', html_name)
     heatmap.save_html(path, open_html=True)
