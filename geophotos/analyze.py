@@ -10,11 +10,11 @@ analysis can be performed in order to output characteristics of the
 dataset such as which countries appeared most frequently.
 '''
 
-from osgeo import ogr
 import fiona
-from collections import Counter
-import pickle
 import os
+import pickle
+from collections import Counter
+from osgeo import ogr
 
 
 class ReverseGeolocator:

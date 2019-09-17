@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
 
+import csv
+import folium
+import geopandas as gpd
+import glob
+import os
+import pandas as pd
+import requests
+import webbrowser
+from datetime import datetime
+from folium.plugins import HeatMap
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
-import requests
-
-from datetime import datetime
-import os
-import csv
-import glob
-
-import pandas as pd
-import folium
-from folium.plugins import HeatMap
-import webbrowser
-
-import geopandas as gpd
 
 try:
     import analyze
-except:
+except ImportError:
     from . import analyze
 
 class GeoPhotos:
@@ -311,7 +308,7 @@ def coordinates_from_csv(filepath, latitude_column, longitude_column,
 
 if __name__ == '__main__':
 
-    import pickle    
+    import pickle
 
     # Read coordinate data from csv
     data_path = os.path.join('data', 'testing', 'coordinates.csv')
