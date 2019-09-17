@@ -149,6 +149,16 @@ class Analyzer:
             country and the number of times it appeared in the data.
         '''
         
+        # if include_none:
+        #     counter = Counter(self.countries)
+        # else:
+        #     counter = Counter(country for country in self.countries if country)
+        
+        # if sort:
+        #     return sorted(dict(counter).items(), key=lambda kv: kv[1], reverse=True)
+        # else:
+        #     return dict(counter)
+
         if include_none:
             counter = Counter(self.countries)
         else:
@@ -158,7 +168,7 @@ class Analyzer:
             return sorted(dict(counter).items(), key=lambda kv: kv[1], reverse=True)
         else:
             return dict(counter)
-
+        
     def most_common(self, n, include_none=False):
         '''Determines the countries that appear most commonly in the
         data.
@@ -186,12 +196,12 @@ class Analyzer:
 
 
 if __name__ == '__main__':
-    shapefile_path = os.path.join('data', 'world_borders.shp')
-    cc = ReverseGeolocator(shapefile_path)
-    coordinates = [42.715746, -78.829416] # hamburg
-    print(cc.get_country(coordinates))
-    coordinates = [55.644904, 12.576965] # amager
-    print(cc.get_country(coordinates))
+    # shapefile_path = os.path.join('data', 'world_borders.shp')
+    # cc = ReverseGeolocator(shapefile_path)
+    # coordinates = [42.715746, -78.829416] # hamburg
+    # print(cc.get_country(coordinates))
+    # coordinates = [55.644904, 12.576965] # amager
+    # print(cc.get_country(coordinates))
     
     pickle_path = os.path.join('data', 'testing', 'coordinates.pickle')
     with open(pickle_path, 'rb') as pickle_file:
