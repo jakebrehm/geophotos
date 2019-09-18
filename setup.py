@@ -24,8 +24,10 @@ setup(
         'folium',
         'webbrowser',
         'osgeo',
-        'geopandas',
      ],
+     extras_require={
+        'geopandas': ['geopandas'],
+     },
      include_package_data=True,
      classifiers=[
          "Programming Language :: Python :: 3.7",

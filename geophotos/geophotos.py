@@ -2,11 +2,11 @@
 
 import csv
 import folium
-import geopandas as gpd
 import glob
 import os
 import pandas as pd
 import requests
+import sys
 import webbrowser
 from datetime import datetime
 from folium.plugins import HeatMap
@@ -14,9 +14,26 @@ from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 
 try:
+    import geopandas as gpd
+except ImportError:
+    pass
+
+# Simplify on deployment
+try:
     import analyze
 except ImportError:
     from . import analyze
+
+
+def requires_geopandas(original):
+    def wrapper(*args, **kwargs):
+        if 'geopandas' in sys.modules:
+            return original(*args, **kwargs)
+        else:
+            name = original.__name__
+            raise ImportError(f'GeoPandas is required to use {name}.')
+    return wrapper
+
 
 class GeoPhotos:
 
@@ -279,6 +296,7 @@ class Map(folium.Map):
         folium.LayerControl().add_to(self)
 
 
+@requires_geopandas
 class BorderLayer(folium.GeoJson):
 
     def __init__(self, countries='all', name=None):
