@@ -36,7 +36,7 @@ class TestAnalyze(unittest.TestCase):
         # Perform the analysis
         results = {
             'Unique Countries': analyzer.unique_countries(),
-            'Count': analyzer.count_countries(),
+            'Count': analyzer.number_of_countries(),
             'Frequency': analyzer.country_frequency(),
             'Most Common': analyzer.most_common(5),
         }

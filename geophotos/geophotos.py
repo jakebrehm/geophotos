@@ -331,7 +331,7 @@ if __name__ == '__main__':
         analyzer = pickle.load(pickle_file)
     results = {
         'Unique Countries': analyzer.unique_countries(),
-        'Count': analyzer.count_countries(),
+        'Count': analyzer.number_of_countries(),
         'Frequency': analyzer.country_frequency(),
         'Most Common': analyzer.most_common(5),
     }

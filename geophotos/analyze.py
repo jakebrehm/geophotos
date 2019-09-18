@@ -31,8 +31,10 @@ class ReverseGeolocator:
             shapefile (str):
                 Path to a shapefile that contains world map information
         '''
-        
+
+        # Initialize instance attributes
         self.shapefile = shapefile
+        # Specify the driver to use and open the shapefile
         driver = ogr.GetDriverByName('ESRI Shapefile')
         self.map_file = driver.Open(shapefile)
         self.layer = self.map_file.GetLayer()
@@ -49,14 +51,21 @@ class ReverseGeolocator:
             coordinates (list/tuple):
                 A list of tuple of length two, with the first element
                 being latitude and the second being longitude.
+
+        Returns:
+            If a match is found, this method returns the name of the
+            country that the coordinates lie in. Otherwise, a value
+            of None is returned implicitly.
         '''
 
+        # Use fiona to open the shapefile
         self.shapes = fiona.open(self.shapefile)
-
+        # Add the coordinates to a Geometry instance as a point
         latitude, longitude = coordinates
         point = ogr.Geometry(ogr.wkbPoint)
         point.AddPoint(longitude, latitude)
-
+        # Iterate through the country shapefile to find which country the
+        # coordinates lie in.
         for s, shape in enumerate(self.shapes):
             country = self.layer.GetFeature(s)
             if country.geometry().Contains(point):
@@ -81,10 +90,11 @@ class Analyzer:
                 Path to save the pickled Analyzer object to.
                 A value of None will not save a pickle.
         '''
-        
+
+        # Initialize instance attributes
         self.data = data
         self.countries = self._get_countries()
-
+        # Optionally save a pickle to the specified path
         if save_pickle is not None:
             with open(save_pickle, 'wb') as output:
                 pickle.dump(self, output)
@@ -97,9 +107,31 @@ class Analyzer:
             A list of countries.
         '''
         
+        # Pass a shapefile to a ReverseGeolocator instance
         shapefile_path = os.path.join('data', 'world_borders.shp')
         locator = ReverseGeolocator(shapefile_path)
+        # Generate a list of countries that appear in the data
         return [locator.get_country(datum) for datum in self.data]
+
+    def _count_countries(self, include_none=False):
+        '''Counts the number of times each country appears in the data,
+        with the ability to filter out None values if desired.
+        
+        Kwargs:
+            include_none (bool) [False]:
+                False will remove all None values from the result.
+            
+        Returns:
+            A counter object containing information about the data.
+        '''
+        
+        # Pass the list of countries to the counter object, filtering out
+        # None values if desired.
+        if include_none:
+            counter = Counter(self.countries)
+        else:
+            counter = Counter(country for country in self.countries if country)
+        return counter
 
     def unique_countries(self, include_none=False):
         '''Determines the unique countries that appear in the data.
@@ -109,15 +141,17 @@ class Analyzer:
                 False will remove all None values from the result.
 
         Returns:
-            A set of unique countries (no repeats).
+            A set of unique countries (therefore no duplicates).
         '''
-        
+
+        # Get rid of duplicates and return the remaining set, filtering out
+        # None values if desired
         if include_none:
             return set(self.countries)
         else:
             return set(country for country in self.countries if country)
 
-    def count_countries(self, include_none=False):
+    def number_of_countries(self, include_none=False):
         '''Counts the number of unique countries that appear in the
         data.
         
@@ -129,6 +163,8 @@ class Analyzer:
             Number of unique countries as an integer.
         '''
         
+        # Get rid of duplicates and count the remaining countries, filtering
+        # out None values if desired.
         if include_none:
             return len(set(self.countries))
         else:
@@ -149,13 +185,11 @@ class Analyzer:
             country and the number of times it appeared in the data.
         '''
 
-        if include_none:
-            counter = Counter(self.countries)
-        else:
-            counter = Counter(country for country in self.countries if country)
-
+        # Count the number of times each country appears in the data
+        counter = self._count_countries(include_none=include_none)
+        # Convert the counter object to a dictionary
         result = dict(counter)
-
+        # Return the result after optionally sorting the result
         if sort:
             return sorted(result.items(), key=lambda kv: kv[1], reverse=True)
         else:
@@ -179,9 +213,8 @@ class Analyzer:
             with each tuple containing the name of the country and the
             number of times it appeared in the data.
         '''
-        
-        if include_none:
-            counter = Counter(self.countries)
-        else:
-            counter = Counter(country for country in self.countries if country)
+
+        # Count the number of times each country appears in the data
+        counter = self._count_countries(include_none=include_none)
+        # Utilize the Counter class's built-in most common method
         return counter.most_common(n)
