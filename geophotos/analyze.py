@@ -29,7 +29,7 @@ class ReverseGeolocator:
         
         Args:
             shapefile (str):
-                Path to a shapefile that contains world map information
+                Path to a shapefile that contains world map information.
         '''
 
         # Initialize instance attributes

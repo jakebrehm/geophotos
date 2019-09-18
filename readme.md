@@ -26,16 +26,21 @@ An overview of some of the major features of **GeoPhotos** are as follows:
 
 ## Dependencies
 
+### Required dependencies
+
 Currently, the following packages are required:
 
 * [pillow](https://github.com/python-pillow/Pillow)
 * webbrowser
 * [folium](https://github.com/python-visualization/folium)
 * osgeo
-* [geopandas](https://github.com/geopandas/geopandas)
 
-There are plans to make certain packages, such as *geopandas*, optional due to
-how difficult they are to install properly.
+Some packages that are currently required may be made optional in the future.
+
+### Optional Dependencies
+
+The [geopandas](https://github.com/geopandas/geopandas) package has been made
+optional due to how difficult it is to install properly.
 
 ## Installation
 

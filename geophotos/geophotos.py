@@ -1,5 +1,20 @@
 # -*- coding: utf-8 -*-
 
+#    ____            ____  _           _            
+#   / ___| ___  ___ |  _ \| |__   ___ | |_ ___  ___ 
+#  | |  _ / _ \/ _ \| |_) | '_ \ / _ \| __/ _ \/ __|
+#  | |_| |  __| (_) |  __/| | | | (_) | || (_) \__ \
+#   \____|\___|\___/|_|   |_| |_|\___/ \__\___/|___/
+
+'''
+GeoPhotos Library
+~~~~~~~~~~~~~~~~~
+
+A Python library designed to make it easy to pull coordinates from
+photos, analyze them in order to obtain useful information, and plot
+them on a map.
+'''
+
 import csv
 import folium
 import glob
@@ -12,12 +27,11 @@ from datetime import datetime
 from folium.plugins import HeatMap
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
-
+# Geopandas is an optional dependency
 try:
     import geopandas as gpd
 except ImportError:
     pass
-
 # Simplify on deployment
 try:
     import analyze
@@ -26,9 +40,15 @@ except ImportError:
 
 
 def requires_geopandas(original):
+    '''Due to geopandas being an optional dependency, this function
+    acts as a decorator that will raise an ImportError if it has not
+    been imported.'''
+    
     def wrapper(*args, **kwargs):
+        # Call the function if geopandas has been imported
         if 'geopandas' in sys.modules:
             return original(*args, **kwargs)
+        # Otherwise, raise an ImportError
         else:
             name = original.__name__
             raise ImportError(f'GeoPandas is required to use {name}.')
@@ -315,52 +335,68 @@ class BorderLayer(folium.GeoJson):
 
 def coordinates_from_csv(filepath, latitude_column, longitude_column,
                          delimiter=','):
+    '''Takes a path to a data file, and with it, pulls out the
+    specified latitude and longitude columns. This data is then
+    returned as a list of tuples.
+    
+    Args:
+        filepath (str):
+            Path to the data/csv file.
+        latitude_column (int):
+            Column of the data file that holds latitude information.
+        longitude_column (int):
+            Column of the data file that holds longitude information.
+    
+    Kwargs:
+        delimiter (str) --> ',':
+            The delimiter that the csv file values are split by.
+    '''
 
+    # Read the data file into a pandas dataframe
     data = pd.read_csv(filepath, delimiter=delimiter)
-
+    # Grab the specified columns and return as a list of tuples
     latitudes = data.iloc[:, latitude_column-1]
     longitudes = data.iloc[:, longitude_column-1]
-
     return list(zip(latitudes, longitudes))
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    import pickle
+#     import pickle
 
-    # Read coordinate data from csv
-    data_path = os.path.join('data', 'testing', 'coordinates.csv')
-    data = coordinates_from_csv(data_path, 2, 3)
-    # Initialize the Map object
-    nys_center = [42.965000, -76.016667]
-    heatmap = Map(location=nys_center, zoom_start=7)
-    # Feed the Heatmap object the coordinates
-    heatmap.coordinates = data
-    # Create the heatmap
-    heatmap.create_heatmap(max_zoom=10, min_opacity=0.05, radius=13, blur=25,
-                           name='Photo Heatmap')
-    # Add a marker to the heatmap
-    hamburg_ny = [42.715746, -78.829416]
-    heatmap.add_marker(location=hamburg_ny,
-                       tooltip='<strong>Hamburg, NY</strong><br>Hometown')
-    # Analyze the data
-    pickle_path = os.path.join('data', 'testing', 'coordinates.pickle')
-    with open(pickle_path, 'rb') as pickle_file:
-        analyzer = pickle.load(pickle_file)
-    results = {
-        'Unique Countries': analyzer.unique_countries(),
-        'Count': analyzer.number_of_countries(),
-        'Frequency': analyzer.country_frequency(),
-        'Most Common': analyzer.most_common(5),
-    }
-    # Use the data to determine which countries to highlight
-    border_layer = BorderLayer(results['Unique Countries'],
-                               name='Countries Visited')
-    border_layer.add_to(heatmap)
-    # Add layer control functionality to the map
-    heatmap.add_layer_control()
-    # Save the heatmap and open it in a browser
-    main_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    html_name = 'testing.html'
-    path = os.path.join(main_directory, 'tests', 'sample_results', html_name)
-    heatmap.save_html(path, open_html=True)
+#     # Read coordinate data from csv
+#     data_path = os.path.join('data', 'testing', 'coordinates.csv')
+#     data = coordinates_from_csv(data_path, 2, 3)
+#     # Initialize the Map object
+#     nys_center = [42.965000, -76.016667]
+#     heatmap = Map(location=nys_center, zoom_start=7)
+#     # Feed the Heatmap object the coordinates
+#     heatmap.coordinates = data
+#     # Create the heatmap
+#     heatmap.create_heatmap(max_zoom=10, min_opacity=0.05, radius=13, blur=25,
+#                            name='Photo Heatmap')
+#     # Add a marker to the heatmap
+#     hamburg_ny = [42.715746, -78.829416]
+#     heatmap.add_marker(location=hamburg_ny,
+#                        tooltip='<strong>Hamburg, NY</strong><br>Hometown')
+#     # Analyze the data
+#     pickle_path = os.path.join('data', 'testing', 'coordinates.pickle')
+#     with open(pickle_path, 'rb') as pickle_file:
+#         analyzer = pickle.load(pickle_file)
+#     results = {
+#         'Unique Countries': analyzer.unique_countries(),
+#         'Count': analyzer.number_of_countries(),
+#         'Frequency': analyzer.country_frequency(),
+#         'Most Common': analyzer.most_common(5),
+#     }
+#     # Use the data to determine which countries to highlight
+#     border_layer = BorderLayer(results['Unique Countries'],
+#                                name='Countries Visited')
+#     border_layer.add_to(heatmap)
+#     # Add layer control functionality to the map
+#     heatmap.add_layer_control()
+#     # Save the heatmap and open it in a browser
+#     main_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#     html_name = 'testing.html'
+#     path = os.path.join(main_directory, 'tests', 'sample_results', html_name)
+#     heatmap.save_html(path, open_html=True)
