@@ -32,17 +32,12 @@ try:
     import geopandas as gpd
 except ImportError:
     pass
-# Simplify on deployment
-try:
-    import analyze
-except ImportError:
-    from . import analyze
 
 
 def requires_geopandas(original):
-    '''Due to geopandas being an optional dependency, this function
-    acts as a decorator that will raise an ImportError if it has not
-    been imported.'''
+    '''This function is a decorator that will raise an ImportError
+    if geopandas has not been imported due to it being an optional
+    dependency.'''
     
     def wrapper(*args, **kwargs):
         # Call the function if geopandas has been imported
@@ -317,20 +312,48 @@ class Map(folium.Map):
 
 
 @requires_geopandas
-class BorderLayer(folium.GeoJson):
+class CountryLayer(folium.GeoJson):
+    '''Wrapper around the folium.GeoJson class. Adds a layer on top of
+    a Map instance which highlights the specified countries.
+    
+    This wrapper mainly exists to make it easier for a user to specify
+    which countries they want highlighted and to also initialize a
+    folium.GeoJson object with this information -- all in one step.
+    
+    This class is only available if geopandas has been successfully
+    imported, otherwise an ImportError will be raised when called.
+    '''
 
     def __init__(self, countries='all', name=None):
+        '''Initializes the object. Takes a list of countries and gets
+        their relevant polygons/shapes.
+        
+        Kwargs:
+            countries (str/list) --> 'all':
+                A list of countries to be highlighted. The default
+                value of 'all' will plot all countries.
+            name (str) --> None:
+                The name of the layer, which will be displayed if
+                layer control is enabled on the Map instance.
+        '''
 
+        # Get the world borders/shapes information
         self.borders = gpd.read_file('zip://data/world_borders.zip')
-
+        # Generate a geopandas dataframe of the specified countries' info
         if isinstance(countries, str) and countries == 'all':
             self.countries = self.borders
         elif isinstance(countries, str):
             self.countries = self.borders[self.borders['NAME'] == countries]
         else:
             self.countries = self.borders[self.borders['NAME'].isin(countries)]
-
+        # Initialize the folium.GeoJson object
         folium.GeoJson.__init__(self, self.countries, name=name)
+        
+    def add_to(self, map_object):
+        '''Extremely thin wrapper around the inherited add_to method,
+        simply to expose it.'''
+        
+        super().add_to(map_object)
 
 
 def coordinates_from_csv(filepath, latitude_column, longitude_column,
@@ -350,6 +373,10 @@ def coordinates_from_csv(filepath, latitude_column, longitude_column,
     Kwargs:
         delimiter (str) --> ',':
             The delimiter that the csv file values are split by.
+
+    Returns:
+        A list of tuples which contain coordinate information in the
+        form of: (latitude, longitude).
     '''
 
     # Read the data file into a pandas dataframe
@@ -390,7 +417,7 @@ def coordinates_from_csv(filepath, latitude_column, longitude_column,
 #         'Most Common': analyzer.most_common(5),
 #     }
 #     # Use the data to determine which countries to highlight
-#     border_layer = BorderLayer(results['Unique Countries'],
+#     border_layer = CountryLayer(results['Unique Countries'],
 #                                name='Countries Visited')
 #     border_layer.add_to(heatmap)
 #     # Add layer control functionality to the map

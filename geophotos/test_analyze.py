@@ -1,17 +1,24 @@
+# -*- coding: utf-8 -*-
+
+'''
+geophotos.analyze unit test
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Unit test of the analyze module of GeoPhotos.
+'''
+
 import analyze
 import os
 import pickle
 import unittest
 
+
 class TestAnalyze(unittest.TestCase):
-    
-    def setUp(self):
-        pass
-    
-    def tearDown(self):
-        pass
-    
+    '''Unit test the analyze module.'''
+
     def test_reverse_geolocator(self):
+        '''Test the ReverseGeolocator class.'''
+        
         # Initialize a ReverseGeolocator object
         shapefile_path = os.path.join('data', 'world_borders.shp')
         cc = analyze.ReverseGeolocator(shapefile_path)
@@ -29,6 +36,8 @@ class TestAnalyze(unittest.TestCase):
         self.assertEqual(country, None)
     
     def test_analyzer(self):
+        '''Test the Analyzer class.'''
+        
         # Load the pickled Analyzer object
         pickle_path = os.path.join('data', 'testing', 'coordinates.pickle')
         with open(pickle_path, 'rb') as pickle_file:
@@ -80,6 +89,6 @@ class TestAnalyze(unittest.TestCase):
         self.assertEqual(results['Frequency'], expected)
         self.assertEqual(results['Most Common'], expected[0:4+1])
 
+
 if __name__ == '__main__':
     unittest.main()
-    

@@ -86,7 +86,7 @@ class Analyzer:
                 e.g. [(latitude, longitude), ...]
                 
         Kwargs:
-            save_pickle (str) [None]:
+            save_pickle (str) --> None:
                 Path to save the pickled Analyzer object to.
                 A value of None will not save a pickle.
         '''
@@ -118,7 +118,7 @@ class Analyzer:
         with the ability to filter out None values if desired.
         
         Kwargs:
-            include_none (bool) [False]:
+            include_none (bool) --> False:
                 False will remove all None values from the result.
             
         Returns:
@@ -137,7 +137,7 @@ class Analyzer:
         '''Determines the unique countries that appear in the data.
         
         Kwargs:
-            include_none (bool) [False]:
+            include_none (bool) --> False:
                 False will remove all None values from the result.
 
         Returns:
@@ -156,13 +156,13 @@ class Analyzer:
         data.
         
         Kwargs:
-            include_none (bool) [False]:
+            include_none (bool) --> False:
                 False will remove all None values from the result.
 
         Returns:
             Number of unique countries as an integer.
         '''
-        
+
         # Get rid of duplicates and count the remaining countries, filtering
         # out None values if desired.
         if include_none:
@@ -175,7 +175,7 @@ class Analyzer:
         data.
 
         Kwargs:
-            include_none (bool) [False]:
+            include_none (bool) --> False:
                 False will remove all None values from the result.
             sort (bool) [True]:
                 True will sort the result from most to least frequent.
@@ -205,7 +205,7 @@ class Analyzer:
                 e.g. an n of 5 gives the top 5 most common countries.
         
         Kwargs:
-            include_none (bool) [False]:
+            include_none (bool) --> False:
                 False will remove all None values from the result.
 
         Returns:

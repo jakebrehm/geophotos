@@ -111,7 +111,7 @@ heatmap.add_marker(location=hamburg_ny,
 analyzer = gp.Analyzer(data)
 unique_countries = analyzer.unique_countries(),
 # Use the data to determine which countries to highlight
-border_layer = gp.BorderLayer(unique_countries, name='Countries Visited')
+border_layer = gp.CountryLayer(unique_countries, name='Countries Visited')
 border_layer.add_to(heatmap)
 # Add layer control functionality to the map
 heatmap.add_layer_control()
