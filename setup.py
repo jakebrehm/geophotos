@@ -22,8 +22,7 @@ setup(
      install_requires=[
         'pillow',
         'folium',
-        'webbrowser',
-        'osgeo',
+        'gdal',
      ],
      extras_require={
         'geopandas': ['geopandas'],

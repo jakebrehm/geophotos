@@ -31,11 +31,11 @@ An overview of some of the major features of **GeoPhotos** are as follows:
 Currently, the following packages are required:
 
 * [pillow](https://github.com/python-pillow/Pillow)
-* webbrowser
 * [folium](https://github.com/python-visualization/folium)
-* osgeo
+* [osgeo](https://github.com/OSGeo/gdal)
 
-Some packages that are currently required may be made optional in the future.
+Some packages that are currently required may be made optional in the future,
+such as the [gdal/osgeo](https://github.com/OSGeo/gdal) package.
 
 ### Optional Dependencies
 
@@ -120,7 +120,7 @@ heatmap.save_html('sample.html', open_html=True)
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/master/img/sample.JPG"
+  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/master/img/sample.GIF"
   alt="Sample geophotos output map"/>
 </p>
 
