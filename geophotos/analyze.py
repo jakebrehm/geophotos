@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-'''
+"""
 geophotos.analyze
 ~~~~~~~~~~~~~~~~~
 
@@ -8,29 +8,30 @@ Analyzes coordinate data to determine which countries each datum falls
 under. Furthermore, with the list of countries determined, subsequent
 analysis can be performed in order to output characteristics of the
 dataset such as which countries appeared most frequently.
-'''
+"""
 
-import fiona
 import os
 import pickle
 from collections import Counter
+
+import fiona
 from osgeo import ogr
 
 
 class ReverseGeolocator:
-    '''Class that has the ability to take a set of coordinates and
+    """Class that has the ability to take a set of coordinates and
     determine which country it lies in.
     
     Primarily intended to only be called by the Analyze class.
-    '''
+    """
 
     def __init__(self, shapefile):
-        '''Initializes the object.
+        """Initializes the object.
         
         Args:
             shapefile (str):
                 Path to a shapefile that contains world map information.
-        '''
+        """
 
         # Initialize instance attributes
         self.shapefile = shapefile
@@ -40,7 +41,7 @@ class ReverseGeolocator:
         self.layer = self.map_file.GetLayer()
 
     def get_country(self, coordinates):
-        '''Determine which country a set of coordinates lies in.
+        """Determine which country a set of coordinates lies in.
         
         Example usage:
         >>> locator = ReverseGeolocator(r'data/world_borders.zip')
@@ -56,7 +57,7 @@ class ReverseGeolocator:
             If a match is found, this method returns the name of the
             country that the coordinates lie in. Otherwise, a value
             of None is returned implicitly.
-        '''
+        """
 
         # Use fiona to open the shapefile
         self.shapes = fiona.open(self.shapefile)
@@ -73,10 +74,10 @@ class ReverseGeolocator:
 
 
 class Analyzer:
-    '''Performs analysis of given coordinate data.'''
+    """Performs analysis of given coordinate data."""
 
     def __init__(self, data, save_pickle=None):
-        '''Initializes the object. Loops through the data that was
+        """Initializes the object. Loops through the data that was
         passed in, which may take a very long time; therefore, an
         option to pickle the resulting object is included.
         
@@ -89,7 +90,7 @@ class Analyzer:
             save_pickle (str) --> None:
                 Path to save the pickled Analyzer object to.
                 A value of None will not save a pickle.
-        '''
+        """
 
         # Initialize instance attributes
         self.data = data
@@ -100,12 +101,12 @@ class Analyzer:
                 pickle.dump(self, output)
 
     def _get_countries(self):
-        '''Gathers an exhaustive list of countries that appear in the
+        """Gathers an exhaustive list of countries that appear in the
         data. This may take awhile for large datasets.
         
         Returns:
             A list of countries.
-        '''
+        """
         
         # Pass a shapefile to a ReverseGeolocator instance
         shapefile_path = os.path.join('data', 'world_borders.shp')
@@ -114,7 +115,7 @@ class Analyzer:
         return [locator.get_country(datum) for datum in self.data]
 
     def _count_countries(self, include_none=False):
-        '''Counts the number of times each country appears in the data,
+        """Counts the number of times each country appears in the data,
         with the ability to filter out None values if desired.
         
         Kwargs:
@@ -123,7 +124,7 @@ class Analyzer:
             
         Returns:
             A counter object containing information about the data.
-        '''
+        """
         
         # Pass the list of countries to the counter object, filtering out
         # None values if desired.
@@ -134,7 +135,7 @@ class Analyzer:
         return counter
 
     def unique_countries(self, include_none=False):
-        '''Determines the unique countries that appear in the data.
+        """Determines the unique countries that appear in the data.
         
         Kwargs:
             include_none (bool) --> False:
@@ -142,7 +143,7 @@ class Analyzer:
 
         Returns:
             A set of unique countries (therefore no duplicates).
-        '''
+        """
 
         # Get rid of duplicates and return the remaining set, filtering out
         # None values if desired
@@ -152,7 +153,7 @@ class Analyzer:
             return set(country for country in self.countries if country)
 
     def number_of_countries(self, include_none=False):
-        '''Counts the number of unique countries that appear in the
+        """Counts the number of unique countries that appear in the
         data.
         
         Kwargs:
@@ -161,7 +162,7 @@ class Analyzer:
 
         Returns:
             Number of unique countries as an integer.
-        '''
+        """
 
         # Get rid of duplicates and count the remaining countries, filtering
         # out None values if desired.
@@ -171,7 +172,7 @@ class Analyzer:
             return len([country for country in set(self.countries) if country])
 
     def country_frequency(self, include_none=False, sort=True):
-        '''Counts the number of times that each country appeared in the
+        """Counts the number of times that each country appeared in the
         data.
 
         Kwargs:
@@ -183,7 +184,7 @@ class Analyzer:
         Returns:
             A list of tuples, where each tuple contains the name of the
             country and the number of times it appeared in the data.
-        '''
+        """
 
         # Count the number of times each country appears in the data
         counter = self._count_countries(include_none=include_none)
@@ -196,7 +197,7 @@ class Analyzer:
             return result
 
     def most_common(self, n, include_none=False):
-        '''Determines the countries that appear most commonly in the
+        """Determines the countries that appear most commonly in the
         data.
         
         Args:
@@ -212,7 +213,7 @@ class Analyzer:
             A list of tuples ordered from most common to least common,
             with each tuple containing the name of the country and the
             number of times it appeared in the data.
-        '''
+        """
 
         # Count the number of times each country appears in the data
         counter = self._count_countries(include_none=include_none)

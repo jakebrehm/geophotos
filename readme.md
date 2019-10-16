@@ -87,8 +87,7 @@ the coordinates for simplicity's sake, the following code does the following:
 6. Save the map as an html file and open it in a web browser
 
 The html file is completely interactive, and I hope to eventually use it on my
-personal website! Unfortunately, I had to post a still image of the map because
-Github doesn't like cool things.
+personal website.
 
 ```python
 import geophotos as gp
