@@ -119,7 +119,7 @@ heatmap.save_html('sample.html', open_html=True)
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/docstrings/img/sample.gif"
+  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/master/img/sample.gif"
   alt="Sample geophotos output map"/>
 </p>
 
