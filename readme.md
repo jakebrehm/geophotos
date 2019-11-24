@@ -1,5 +1,7 @@
 **GeoPhotos** is a package to pull, analyze, and plot coordinates from photos.
 
+<img src="https://img.shields.io/pypi/v/geophotos" alt="latest release" />
+
 ---
 # What is **GeoPhotos**?
 
