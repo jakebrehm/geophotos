@@ -67,7 +67,7 @@ into some issues (I sure did!).
 
 ## Updating
 
-To update *geophotos* to the latest version, simple use the command:
+To update *geophotos* to the latest version, simply use the command:
 
 ```
 pip install --upgrade geophotos
