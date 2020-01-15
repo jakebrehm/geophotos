@@ -4,7 +4,6 @@ dist/
 *.egg-info/
 geophotos/data/testing/
 tests/
-test_*.py
 create_csv.py
 *.csv
 *.html
