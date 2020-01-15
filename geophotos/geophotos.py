@@ -672,40 +672,10 @@ class CountryLayer(folium.GeoJson):
         super().add_to(map_object)
 
 
-def coordinates_from_csv(filepath, latitude_column, longitude_column,
-                         delimiter=','):
-    '''Takes a path to a data file, and with it, pulls out the
-    specified latitude and longitude columns. This data is then
-    returned as a list of tuples.
-    
-    Args:
-        filepath (str):
-            Path to the data/csv file.
-        latitude_column (int):
-            Column of the data file that holds latitude information.
-        longitude_column (int):
-            Column of the data file that holds longitude information.
-    
-    Kwargs:
-        delimiter (str) --> ',':
-            The delimiter that the csv file values are split by.
-
-    Returns:
-        A list of tuples which contain coordinate information in the
-        form of: (latitude, longitude).
-    '''
-
-    # Read the data file into a pandas dataframe
-    data = pd.read_csv(filepath, delimiter=delimiter)
-    # Grab the specified columns and return as a list of tuples
-    latitudes = data.iloc[:, latitude_column-1]
-    longitudes = data.iloc[:, longitude_column-1]
-    return list(zip(latitudes, longitudes))
-
-
 if __name__ == '__main__':
 
     import pickle
+    from .data import coordinates_from_csv
 
     # Read coordinate data from csv
     data_path = os.path.join('data', 'testing', 'coordinates.csv')
