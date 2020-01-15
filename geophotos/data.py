@@ -4,6 +4,10 @@
 geophotos.gather
 ~~~~~~~~~~~~~~~~~
 
+Specializes in reading and writing geographic coordinate data. Intended
+to provide a way to pull coordinates from a variety of sources, such as
+Google Takeout Location History. This information can then be stored,
+either as a csv file or a returned object.
 """
 
 import csv
@@ -44,19 +48,18 @@ def coordinates_from_csv(filepath, latitude_column, longitude_column,
     return list(zip(latitudes, longitudes))
 
 
-def csv_from_google_takeout_json(filepath, destination=None):
-    """Converts the information stored in a Google Takeout JSON file to
-    a csv file with three columns: timestamp, latitude, and longitude.
+def _parse_google_takeout_json(filepath):
+    '''Parses the input Google Takeout Location History JSON file.
     
     Args:
         filepath (str):
-            The location of the Google Takeout JSON file.
+            The location of the Google Takeout Location History JSON
+            file.
 
-    Kwargs:
-        destination (str) --> None:
-            Where to save the output csv file. If no filepath is
-            specified, a list of coordinates will be returned.
-    """
+    Returns:
+        A list of tuples which contain coordinate information in the
+        form of: (timestamp, latitude, longitude).
+    '''
 
     # Load the json file and parse the location information
     with open(filepath, 'r') as takeout_json:
@@ -73,28 +76,64 @@ def csv_from_google_takeout_json(filepath, destination=None):
         latitude = float(location['latitudeE7']) / 10e7
         longitude = float(location['longitudeE7']) / 10e7
         # Write the coordinates to the information list
-        row = [latitude, longitude]
-        if destination:
-            # If saving to a file, include a timestamp column
-            row.insert(0, timestamp)
-        information.append(tuple(row))
+        row = (timestamp, latitude, longitude)
+        information.append(row)
+    
+    return information
 
-    if destination:
-        # If a filepath was specified, instantiate the csv writer
-        with open(destination, 'w') as output:
-            writer = csv.writer(output, delimiter=',')
-            # Write a header row to the csv file
-            writer.writerow(['timestamp', 'latitude', 'longitude'])
-            # Write the rest of the information to the csv file
-            writer.writerows(information)
-    else:
-        # Otherwise, return the information list
-        return information
+
+def csv_from_google_takeout_json(filepath, destination):
+    '''Converts the information stored in a Google Takeout Location
+    History JSON file to a csv file with three columns: timestamp,
+    latitude, and longitude.
+    
+    Args:
+        filepath (str):
+            The location of the Google Takeout Location History JSON
+            file.
+        destination (str):
+            Where to save the output csv file.
+    '''
+
+    # Get the coordinate information from the input file
+    information = _parse_google_takeout_json(filepath)
+    # If a filepath was specified, instantiate the csv writer
+    with open(destination, 'w') as output:
+        writer = csv.writer(output, delimiter=',')
+        # Write a header row to the csv file
+        writer.writerow(['timestamp', 'latitude', 'longitude'])
+        # Write the rest of the information to the csv file
+        writer.writerows(information)
+
+
+def coordinates_from_google_takeout_json(filepath):
+    '''Takes a path to a Google Takeout Location History JSON file,
+    and with it, pulls the coordinates. This data is then returned as
+    a list of tuples.
+    
+    Args:
+        filepath (str):
+            The location of the Google Takeout Location History JSON
+            file.
+
+    Returns:
+        A list of tuples which contain coordinate information in the
+        form of: (latitude, longitude).
+    '''
+
+    # Get the coordinate information from the input file
+    information = _parse_google_takeout_json(filepath)
+    # Remove timestamp column for synergy with other geophotos functions
+    return [(info[1], info[2]) for info in information]
 
 
 if __name__ == '__main__':
-    data = csv_from_google_takeout_json(
+    csv_from_google_takeout_json(
         r"/Users/jake/OneDrive/Python/_Miscellaneous/Google Location History/Early 2020/Location History.json",
         r"/Users/jake/OneDrive/Python/_Miscellaneous/Google Location History/Early 2020/test.csv",
+    )
+
+    data = coordinates_from_google_takeout_json(
+        r"/Users/jake/OneDrive/Python/_Miscellaneous/Google Location History/Early 2020/Location History.json"
     )
     print(data)
