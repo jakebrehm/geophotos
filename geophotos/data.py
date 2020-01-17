@@ -73,8 +73,8 @@ def _parse_google_takeout_json(filepath):
         seconds = int(location['timestampMs']) / 1000
         timestamp = datetime.utcfromtimestamp(seconds)
         # Convert the latitude and longitudes to a readable format
-        latitude = float(location['latitudeE7']) / 10e7
-        longitude = float(location['longitudeE7']) / 10e7
+        latitude = float(location['latitudeE7']) / 1e7
+        longitude = float(location['longitudeE7']) / 1e7
         # Write the coordinates to the information list
         row = (timestamp, latitude, longitude)
         information.append(row)

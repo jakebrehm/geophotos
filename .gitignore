@@ -3,6 +3,8 @@ dist/
 .ipynb_checkpoints/
 *.egg-info/
 geophotos/data/testing/
+.vscode/
+ide/
 tests/
 create_csv.py
 *.csv
