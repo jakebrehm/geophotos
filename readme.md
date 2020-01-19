@@ -161,7 +161,7 @@ heatmap.save_html(r'locationhistory.html', open_html=True)
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/master/img/location_sample.gif"
+  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/master/img/location_sample.png"
   alt="Sample geophotos location history analysis output map"/>
 </p>
 
