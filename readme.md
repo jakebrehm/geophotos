@@ -7,9 +7,11 @@
 ---
 # What is **GeoPhotos**?
 
+Initially
+
 **GeoPhotos** is a Python library designed to make it easy to pull coordinates
-from photos, analyze them in order to obtain useful information, and plot them
-on a map.
+from various sources, analyze them in order to obtain useful information, and
+plot them on a map.
 
 ## Main features
 
@@ -17,6 +19,7 @@ An overview of some of the major features of **GeoPhotos** are as follows:
 
 * Extract metadata (timestamp, coordinates, etc.) from one or more files, and
   write to a csv file if desired
+* Pull coordinates from Google Takeout location history
 * Plot coordinate data on a fully customizable heatmap, including markers,
   tooltips, layer control, and more
 * Analyze coordinate data to determine unique countries, most common countries,
@@ -44,7 +47,8 @@ such as the [gdal/osgeo](https://github.com/OSGeo/gdal) package.
 ### Optional Dependencies
 
 The [geopandas](https://github.com/geopandas/geopandas) package has been made
-optional due to how difficult it is to install properly.
+optional due to how difficult it is to install properly. It is required to
+perform geographical data analysis.
 
 ## Installation
 
@@ -78,6 +82,8 @@ pip install --upgrade geophotos
 ```
 
 # Example usage
+
+## Heatmap from photo locations
 
 One of the main reasons I made this package was to pull GPS information from the
 pictures in my iCloud library, then plot them on a map. Skipping the pulling of
@@ -123,8 +129,39 @@ heatmap.save_html('sample.html', open_html=True)
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/master/img/sample.gif"
-  alt="Sample geophotos output map"/>
+  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/master/img/photo_sample.gif"
+  alt="Sample geophotos photo analysis output map"/>
+</p>
+
+## Heatmap from Google Takeout location history
+
+Another thing I wanted to do when starting this project was be able to analyze
+my Google Takeout location data. While not an overly complicated thing to do
+without **GeoPhotos**, it does make this process very simple.
+
+For example, the following code extracts coordinate information from the Google
+Takeout location history JSON file and plots them on a heatmap. It's really
+interesting to see where you've been the most.
+
+```python
+import geophotos as gp
+
+# Read coordinate data from the location history file
+data = gp.coordinates_from_google_takeout_json(r'locationhistory.json')
+# Initialize the Map object
+nys_center = [42.965000, -76.016667]
+heatmap = gp.Map(location=nys_center, zoom_start=7)
+# Feed the Heatmap object the coordinates
+heatmap.coordinates = data
+# Create the heatmap
+heatmap.create_heatmap(max_zoom=14, min_opacity=0.05, radius=13, blur=25)
+# Save the heatmap and open it in a browser
+heatmap.save_html(r'locationhistory.html', open_html=True)
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/master/img/location_sample.gif"
+  alt="Sample geophotos location history analysis output map"/>
 </p>
 
 ---
