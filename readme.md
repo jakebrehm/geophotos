@@ -8,8 +8,6 @@ sources.
 ---
 # What is **GeoPhotos**?
 
-Initially
-
 **GeoPhotos** is a Python library designed to make it easy to pull coordinates
 from various sources, analyze them in order to obtain useful information, and
 plot them on a map.
@@ -161,7 +159,7 @@ heatmap.save_html(r'locationhistory.html', open_html=True)
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jakebrehm/geophotos/master/img/location_sample.png"
+  <img src="https://github.com/jakebrehm/geophotos/blob/master/img/location_sample.png"
   alt="Sample geophotos location history analysis output map"/>
 </p>
 

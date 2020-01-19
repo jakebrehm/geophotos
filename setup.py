@@ -7,7 +7,7 @@ README = (HERE / 'README.md').read_text()
 
 setup(
      name='geophotos',
-     version='0.22',
+     version='0.50.1',
      author="Jake Brehm",
      author_email="code@jakebrehm.com",
      license='MIT',
