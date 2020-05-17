@@ -4,16 +4,19 @@
   <br>
   <br>
 
-  <a href="https://pypi.org/project/geophotos/">
-    <img src="https://img.shields.io/pypi/v/geophotos?style=for-the-badge" alt="latest release" />
-  </a>
+  <h1>Making handling coordinates a breeze.</h1>
+
+  <br>
+
+  <img src="https://img.shields.io/github/last-commit/jakebrehm/geophotos?style=for-the-badge&color=blue" alt="Last Commit"></img>
+  <img src="https://img.shields.io/pypi/v/geophotos?style=for-the-badge&color=green" alt="Latest Release"></img>
+  <img src="https://img.shields.io/github/license/jakebrehm/geophotos?style=for-the-badge&color=blue" alt="MIT License"></img>
+  <img src="https://img.shields.io/badge/Made%20With-Python%203.7-violet.svg?style=for-the-badge&logo=Python" alt="Made with Python 3.7"></img>
+
+  <br>
 </div>
 
-**GeoPhotos** is a package to pull, analyze, and plot coordinates from various
-sources.
 
-
----
 # What is **GeoPhotos**?
 
 **GeoPhotos** is a Python library designed to make it easy to pull coordinates
