@@ -1,9 +1,17 @@
+<div align="center">
+  <img src="https://github.com/jakebrehm/geophotos/blob/master/img/logo.png" alt=" GeoPhotos Logo"/>
+
+  <br>
+  <br>
+
+  <a href="https://pypi.org/project/geophotos/">
+    <img src="https://img.shields.io/pypi/v/geophotos?style=for-the-badge" alt="latest release" />
+  </a>
+</div>
+
 **GeoPhotos** is a package to pull, analyze, and plot coordinates from various
 sources.
 
-<a href="https://pypi.org/project/geophotos/">
-<img src="https://img.shields.io/pypi/v/geophotos" alt="latest release" />
-</a>
 
 ---
 # What is **GeoPhotos**?

@@ -12,3 +12,4 @@ create_csv.py
 *.html
 *.DS_Store
 *.stg
+*.psd
