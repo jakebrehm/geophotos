@@ -9,9 +9,9 @@
   <br>
 
   <img src="https://img.shields.io/github/last-commit/jakebrehm/geophotos?style=for-the-badge&color=blue" alt="Last Commit"></img>
-  <img src="https://img.shields.io/pypi/v/geophotos?style=for-the-badge&color" alt="Latest Release"></img>
+  <img src="https://img.shields.io/pypi/v/geophotos?style=for-the-badge&color=default" alt="Latest Release"></img>
   <img src="https://img.shields.io/github/license/jakebrehm/geophotos?style=for-the-badge&color=blue" alt="MIT License"></img>
-  <img src="https://img.shields.io/badge/Made%20With-Python%203.7-violet.svg?style=for-the-badge&logo=Python" alt="Made with Python 3.7"></img>
+  <img src="https://img.shields.io/badge/Made%20With-Python%203.7-default.svg?style=for-the-badge&logo=Python" alt="Made with Python 3.7"></img>
 
   <br>
 </div>
