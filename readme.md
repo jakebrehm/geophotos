@@ -72,7 +72,7 @@ pip install geophotos
 However, you will most likely run into problems doing it this way.
 Unfortunately, I have tried and failed to overcome these obstacles myself.
 My recommendation is to install geopandas using Anaconda/conda (you might have
-to install gdal as well), and then pip install it into your current environment:
+to install *gdal* as well), and then pip install it into your current environment:
 
 ```
 conda install geopandas
@@ -106,8 +106,7 @@ the coordinates for simplicity's sake, the following code does the following:
 5. Highlight only the countries I've been to on a separate layer
 6. Save the map as an html file and open it in a web browser
 
-The html file is completely interactive, and I hope to eventually use it on my
-personal website.
+The html file is completely interactive.
 
 ```python
 import geophotos as gp
